@@ -45,6 +45,17 @@ def home_team(row):
 
 sea_df['home'] = sea_df.apply(lambda row: home_team(row), axis=1)
 
+# Add home team column to schedule dataframe
+
+
+def road_team(row):
+    if row['location'] == 'Away':
+        return 'SEA'
+    return row['opponent_abbr']
+
+
+sea_df['road'] = sea_df.apply(lambda row: road_team(row), axis=1)
+
 print(sea_df)
 
 
