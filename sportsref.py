@@ -1,4 +1,5 @@
 from sportsreference.mlb.teams import Teams
+from sportsreference.mlb.boxscore import Boxscore
 
 indexes = []
 for team in Teams():
@@ -10,7 +11,7 @@ for team in Teams():
 
 # Remove empty tables
 a = [x for x in indexes if "td" not in x]
-print(len(a))
+# print(len(a))
 
 
 # Remove duplicate indexes
@@ -19,4 +20,26 @@ def de_dupe(x):
 
 
 indexes_dedupped = de_dupe(a)
-print(len(indexes_dedupped))
+
+games = indexes_dedupped
+for game in games:
+    g = Boxscore(game)
+    print(g.home_runs)
+
+# home_runz = []
+# away_runz = []
+# for game in indexes_dedupped:
+#     boxscore = game.boxscore
+#     home_runz.append(boxscore.home_runs)
+
+# print(home_runz)
+
+# # cols = ['date', 'visitor', 'vis score', 'home', 'home score']
+# # lst = []
+
+# rd = []
+# teams = Teams()
+# for team in teams:
+#     print(team.name)  # Prints the team's name
+#     # Prints the team's season batting average
+#     print(team.pythagorean_win_loss)
