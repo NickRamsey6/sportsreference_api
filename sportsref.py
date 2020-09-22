@@ -41,22 +41,53 @@ def road_team(row):
     return row['opponent_abbr']
 
 
+def home_team_runs(row):
+    if row['location'] == 'Away':
+        return row['runs_allowed']
+    return row['runs_scored']
+
+
+def road_team_runs(row):
+    if row['location'] == 'Away':
+        return row['runs_scored']
+    return row['runs_allowed']
+
+
+def winning_team(row):
+    if row['result'] == 'Win':
+        return team.abbreviation
+    return row['opponent_abbr']
+
+
 scheds_list = []
 for team in Teams():
     sched = team.schedule.dataframe
 
     sched['home'] = sched.apply(lambda row: home_team(row), axis=1)
     sched['road'] = sched.apply(lambda row: road_team(row), axis=1)
+    sched['home_team_runs'] = sched.apply(
+        lambda row: home_team_runs(row), axis=1)
+    sched['road_team_runs'] = sched.apply(
+        lambda row: road_team_runs(row), axis=1)
     sched['team'] = team.name
     sched['cum_runs_scored'] = sched['runs_scored'].cumsum()
+    sched['cum_runs_allowed'] = sched['runs_allowed'].cumsum()
+    sched['ytd_rd'] = (sched['cum_runs_scored'] -
+                       sched['cum_runs_allowed'])/sched['game']
+    sched['winning_team'] = sched.apply(lambda row: winning_team(row), axis=1)
+    # FAILED sumif by date
+    # sched['league_home_team_runs'] = sched.groupby(
+    #     ['datetime'])['home_team_runs'].sum()
 
     scheds_list.append(sched)
 final = pd.concat(scheds_list)
 
 final2 = final.drop_duplicates(subset=['boxscore_index'])
+# final2['league_home_team_runs'] = final2.groupby(
+#     'datetime')['home_team_runs'].sum()
 
 final.to_csv('duped.csv', index=False)
-final2.to_csv('deduped.csv', index=False)
+final2.to_csv('deduped2.csv', index=False)
 
 
 # sea_schedule = Schedule('SEA')
