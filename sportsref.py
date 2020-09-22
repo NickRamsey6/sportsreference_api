@@ -47,6 +47,8 @@ for team in Teams():
 
     sched['home'] = sched.apply(lambda row: home_team(row), axis=1)
     sched['road'] = sched.apply(lambda row: road_team(row), axis=1)
+    sched['team'] = team.name
+    sched['cum_runs_scored'] = sched['runs_scored'].cumsum()
 
     scheds_list.append(sched)
 final = pd.concat(scheds_list)
