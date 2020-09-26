@@ -2,17 +2,25 @@ import pandas as pd
 import numpy as np
 import random as rnd
 
-gdf = pd.read_csv('updated.csv')
-games = pd.read_csv('games.csv')
+gdf = pd.read_csv('2019.csv')
+games = pd.read_csv('2019games.csv')
 
 team1wins = []
 team2wins = []
+ties = []
 winner = []
 for i in range(len(games)):
     team1 = games['team1'][i]
     team2 = games['team2'][i]
     team1df = gdf[gdf.team == team1]
     team2df = gdf[gdf.team == team2]
+    team1df.datetime = team1df.datetime.apply(
+        lambda x: pd.to_datetime(x, format='%Y-%m-%2', errors='ignore'))
+    team1df = team1df[team1df['datetime'] < games['Date'][i]]
+    team2df.datetime = team2df.datetime.apply(
+        lambda x: pd.to_datetime(x, format='%Y-%m-%2', errors='ignore'))
+    team2df = team2df[team2df['datetime'] < games['Date'][i]]
+
     team1meanruns = team1df.runs_scored.mean()
     team1sdruns = team1df.runs_scored.std()
     team1oppruns = team1df.runs_allowed.mean()
@@ -48,12 +56,16 @@ for i in range(len(games)):
                 tie += 1
         if team1win > team2win:
             winner.append(team1)
-        else:
+        elif team1win < team2win:
             winner.append(team2)
+        else:
+            winner.append('tie')
         team1wins.append(team1win)
         team2wins.append(team2win)
-    gamesSim(100000)
+        ties.append(tie)
+    gamesSim(10000)
 games['winners'] = winner
 games['team1wins'] = team1wins
 games['team2wins'] = team2wins
-print(games)
+games['ties'] = ties
+simed2019 = games.to_csv('simmed2019.csv', index=False)

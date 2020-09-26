@@ -60,23 +60,23 @@ def winning_team(row):
 
 
 scheds_list = []
-for team in Teams():
+for team in Teams('2019'):
     sched = team.schedule.dataframe
     # sched['datetime'] = pd.to_datetime(sched['datetime'], format='%d%mm%Y')
 
     # sched['datetime'] = sched['datetime'].astype('string')
-    sched['home'] = sched.apply(lambda row: home_team(row), axis=1)
-    sched['road'] = sched.apply(lambda row: road_team(row), axis=1)
-    sched['home_team_runs'] = sched.apply(
-        lambda row: home_team_runs(row), axis=1)
-    sched['road_team_runs'] = sched.apply(
-        lambda row: road_team_runs(row), axis=1)
-    sched['team'] = team.name
-    sched['cum_runs_scored'] = sched['runs_scored'].cumsum()
-    sched['cum_runs_allowed'] = sched['runs_allowed'].cumsum()
-    sched['ytd_rd'] = (sched['cum_runs_scored'] -
-                       sched['cum_runs_allowed'])/sched['game']
-    sched['winning_team'] = sched.apply(lambda row: winning_team(row), axis=1)
+    # sched['home'] = sched.apply(lambda row: home_team(row), axis=1)
+    # sched['road'] = sched.apply(lambda row: road_team(row), axis=1)
+    # sched['home_team_runs'] = sched.apply(
+    #     lambda row: home_team_runs(row), axis=1)
+    # sched['road_team_runs'] = sched.apply(
+    #     lambda row: road_team_runs(row), axis=1)
+    sched['team'] = team.abbreviation
+    # sched['cum_runs_scored'] = sched['runs_scored'].cumsum()
+    # sched['cum_runs_allowed'] = sched['runs_allowed'].cumsum()
+    # sched['ytd_rd'] = (sched['cum_runs_scored'] -
+    #                    sched['cum_runs_allowed'])/sched['game']
+    # sched['winning_team'] = sched.apply(lambda row: winning_team(row), axis=1)
     # all_days = pd.date_range(
     #     sched['datetime'].min(), sched['datetime'].max(), freq='D')
     # sched.loc[all_days]
@@ -97,7 +97,7 @@ final = pd.concat(scheds_list)
 #     'datetime')['home_team_runs'].sum()
 
 # BRING BACK CSVs
-final.to_csv('updated.csv', index=False)
+final.to_csv('2019.csv', index=False)
 # final2.to_csv('deduped2.csv', index=False)
 # final3.to_csv('dated.csv', index=false)
 
