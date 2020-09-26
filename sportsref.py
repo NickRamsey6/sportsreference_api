@@ -62,7 +62,9 @@ def winning_team(row):
 scheds_list = []
 for team in Teams():
     sched = team.schedule.dataframe
+    # sched['datetime'] = pd.to_datetime(sched['datetime'], format='%d%mm%Y')
 
+    # sched['datetime'] = sched['datetime'].astype('string')
     sched['home'] = sched.apply(lambda row: home_team(row), axis=1)
     sched['road'] = sched.apply(lambda row: road_team(row), axis=1)
     sched['home_team_runs'] = sched.apply(
@@ -75,6 +77,10 @@ for team in Teams():
     sched['ytd_rd'] = (sched['cum_runs_scored'] -
                        sched['cum_runs_allowed'])/sched['game']
     sched['winning_team'] = sched.apply(lambda row: winning_team(row), axis=1)
+    # all_days = pd.date_range(
+    #     sched['datetime'].min(), sched['datetime'].max(), freq='D')
+    # sched.loc[all_days]
+
     # FAILED sumif by date
     # sched['league_home_team_runs'] = sched.groupby(
     #     ['datetime'])['home_team_runs'].sum()
@@ -82,12 +88,18 @@ for team in Teams():
     scheds_list.append(sched)
 final = pd.concat(scheds_list)
 
-final2 = final.drop_duplicates(subset=['boxscore_index'])
+# final.index = pd.DatetimeIndex(final['datetime'])
+# final3 = final.reindex(idx, fill_value=0)
+
+# Bring back drop dupes line
+# final2 = final.drop_duplicates(subset=['boxscore_index'])
 # final2['league_home_team_runs'] = final2.groupby(
 #     'datetime')['home_team_runs'].sum()
 
-final.to_csv('duped.csv', index=False)
-final2.to_csv('deduped2.csv', index=False)
+# BRING BACK CSVs
+final.to_csv('updated.csv', index=False)
+# final2.to_csv('deduped2.csv', index=False)
+# final3.to_csv('dated.csv', index=false)
 
 
 # sea_schedule = Schedule('SEA')
